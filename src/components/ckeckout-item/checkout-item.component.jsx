@@ -1,9 +1,13 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { clearItemFromCart, addItem, removeItem } from '../../redux/cart/cart.actions'
 import { ChecoutItemContainer, CheckoutItemImageContainer, CheckoutItemImage, RemoveButtonContainer, ArrowContainer, QuantityContainer, TextContainer } from './checkout-item.styles'
-const CheckoutItem = ({ cartItem, clearItem, addItem, removeItem }) => {
+const CheckoutItem = ({ cartItem }) => {
     const { name, imageUrl, price, quantity } = cartItem
+    const dispatch = useDispatch()
+    const clearItemHandler = (item) => dispatch(clearItemFromCart(item))
+    const addItemHandler = item => dispatch(addItem(item))
+    const removeItemHandler = item => dispatch(removeItem(item))
 
     return (
         <ChecoutItemContainer>
@@ -12,22 +16,17 @@ const CheckoutItem = ({ cartItem, clearItem, addItem, removeItem }) => {
             </CheckoutItemImageContainer>
             <TextContainer>{name}</TextContainer>
             <QuantityContainer>
-                <ArrowContainer onClick={() => removeItem(cartItem)}>&#10094;</ArrowContainer>
+                <ArrowContainer onClick={() => removeItemHandler(cartItem)}>&#10094;</ArrowContainer>
                 <span>{quantity}</span>
-                <ArrowContainer onClick={() => addItem(cartItem)}>&#10095;</ArrowContainer>
+                <ArrowContainer onClick={() => addItemHandler(cartItem)}>&#10095;</ArrowContainer>
             </QuantityContainer>
             <TextContainer>{price}</TextContainer>
-            <RemoveButtonContainer onClick={() => clearItem(cartItem)}>
+            <RemoveButtonContainer onClick={() => clearItemHandler(cartItem)}>
                 &#10005;
             </RemoveButtonContainer>
         </ChecoutItemContainer>
     )
 }
 
-const mapDispatchToProps = dispatch => ({
-    clearItem: item => dispatch(clearItemFromCart(item)),
-    addItem: item => dispatch(addItem(item)),
-    removeItem: item => dispatch(removeItem(item))
-})
 
-export default connect(null, mapDispatchToProps)(CheckoutItem)
+export default CheckoutItem

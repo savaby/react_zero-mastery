@@ -1,45 +1,45 @@
 import React from 'react'
 import { ReactComponent as Logo } from '../../assets/crown.svg'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import CartIcon from '../cart-icon/cart-icon.component'
 import CartDropdown from '../cart-dropdown/cart-dropdown.component'
-import { createStructuredSelector } from 'reselect'
 import { selectCartHidden } from '../../redux/cart/cart.selectors'
 import { selectCurrentUser } from '../../redux/user/user.selectors'
 import { HeaderContainer, LogoContainer, OptionsContainer, OptionLink } from './header.styles'
 import { signOutStart } from '../../redux/user/user.actions'
-const Header = ({ currentUser, hidden, signOutStart }) => (
-    <HeaderContainer>
-        <LogoContainer to="/" className='logo-container'>
-            <Logo className='logo' />
-        </LogoContainer>
-        <OptionsContainer>
-            <OptionLink className='option' to='/shop'>
-                SHOP
-            </OptionLink>
-            <OptionLink className='option' to='/shop'>
-                CONTACT
-            </OptionLink>
-            {
-                currentUser ?
-                    <OptionLink as='div' onClick={signOutStart}>SIGN OUT</OptionLink>
-                    :
-                    <OptionLink className='option' to='/signin'>SIGN IN</OptionLink>
-            }
-            <CartIcon />
-        </OptionsContainer>
-        {hidden ? null : <CartDropdown />}
+const Header = () => {
 
-    </HeaderContainer>
-)
+    const currentUser = useSelector(selectCurrentUser)
+    const hidden = useSelector(selectCartHidden)
 
-const mapStateToProps = createStructuredSelector({
-    currentUser: selectCurrentUser,
-    hidden: selectCartHidden,
-})
+    const dispatch = useDispatch()
+    const signOutStartHandler = () => dispatch(signOutStart())
 
-const mapDispatchToProps = dispatch => ({
-    signOutStart: () => dispatch(signOutStart())
-})
+    return (
+        <HeaderContainer>
+            <LogoContainer to="/" className='logo-container'>
+                <Logo className='logo' />
+            </LogoContainer>
+            <OptionsContainer>
+                <OptionLink className='option' to='/shop'>
+                    SHOP
+                </OptionLink>
+                <OptionLink className='option' to='/shop'>
+                    CONTACT
+                </OptionLink>
+                {
+                    currentUser ?
+                        <OptionLink as='div' onClick={signOutStartHandler}>SIGN OUT</OptionLink>
+                        :
+                        <OptionLink className='option' to='/signin'>SIGN IN</OptionLink>
+                }
+                <CartIcon />
+            </OptionsContainer>
+            {hidden ? null : <CartDropdown />}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header)
+        </HeaderContainer>
+    )
+}
+
+
+export default Header
